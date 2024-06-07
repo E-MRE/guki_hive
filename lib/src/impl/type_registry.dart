@@ -34,14 +34,7 @@ class _TypeRegistry {
       if (json is Map<String, dynamic>) {
         value = handler.fromJson(json);
       } else if (json is List) {
-        value = json.map((element) {
-          if (element is Map<String, dynamic>) {
-            return handler.fromJson(element);
-          }
-
-          throw ArgumentError('Type mismatch. Expected '
-              ' List<Map<String,dynamic>> but got ${json.runtimeType}.');
-        }).toList();
+        value = handler.fromJson(json);
       } else {
         throw ArgumentError('Type mismatch. Expected Map<String,dynamic> '
             'but got ${json.runtimeType}.');
@@ -50,7 +43,7 @@ class _TypeRegistry {
 
     if (value is T) {
       return value;
-    } else if (value is List && T.toString().toLowerCase().contains('list<')) {
+    } else if (T.toString().toLowerCase().contains('list<')) {
       return value as T;
     } else {
       throw ArgumentError(
@@ -82,7 +75,7 @@ class _TypeRegistry {
   }
 }
 
-T? _noop<T>(Map<String, dynamic> json) {
+T? _noop<T>(dynamic json) {
   throw UnimplementedError();
 }
 
@@ -95,7 +88,7 @@ class _TypeHandler<T> {
 
   final int? typeId;
 
-  final T? Function(Map<String, dynamic> json) fromJson;
+  final T? Function(dynamic json) fromJson;
 
   bool handlesValue(dynamic value) {
     return value is T;
