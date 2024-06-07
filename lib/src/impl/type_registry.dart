@@ -33,8 +33,15 @@ class _TypeRegistry {
       }
       if (json is Map<String, dynamic>) {
         value = handler.fromJson(json);
-      } else if (json is List<Map<String, dynamic>>) {
-        value = json.map(handler.fromJson).toList();
+      } else if (json is List) {
+        value = json.map((element) {
+          if (element is Map<String, dynamic>) {
+            return handler.fromJson(element);
+          }
+
+          throw ArgumentError('Type mismatch. Expected '
+              ' List<Map<String,dynamic>> but got ${json.runtimeType}.');
+        }).toList();
       } else {
         throw ArgumentError('Type mismatch. Expected Map<String,dynamic> '
             'but got ${json.runtimeType}.');
@@ -56,8 +63,7 @@ class _TypeRegistry {
       return handler.typeId;
     }
 
-    for (final MapEntry(key: type, value: handler)
-        in _reverseRegistry.entries) {
+    for (final MapEntry(key: type, value: handler) in _reverseRegistry.entries) {
       if (handler.handlesValue(value)) {
         _reverseRegistry[type] = handler;
         return handler.typeId;
