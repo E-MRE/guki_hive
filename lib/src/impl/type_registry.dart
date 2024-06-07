@@ -50,6 +50,8 @@ class _TypeRegistry {
 
     if (value is T) {
       return value;
+    } else if (value is List && T is List) {
+      return value as T;
     } else {
       throw ArgumentError(
         'Type mismatch. Expected $T but got ${value.runtimeType}.',
