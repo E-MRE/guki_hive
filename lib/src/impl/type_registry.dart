@@ -31,9 +31,7 @@ class _TypeRegistry {
           'Type is not registered. Did you forget to register it?',
         );
       }
-      if (json is Map<String, dynamic>) {
-        value = handler.fromJson(json);
-      } else if (json is List) {
+      if (json is Map<String, dynamic> || json is List) {
         value = handler.fromJson(json);
       } else {
         throw ArgumentError('Type mismatch. Expected Map<String,dynamic> '
@@ -43,8 +41,6 @@ class _TypeRegistry {
 
     if (value is T) {
       return value;
-    } else if (T.toString().toLowerCase().contains('list<')) {
-      return value as T;
     } else {
       throw ArgumentError(
         'Type mismatch. Expected $T but got ${value.runtimeType}.',
@@ -58,7 +54,8 @@ class _TypeRegistry {
       return handler.typeId;
     }
 
-    for (final MapEntry(key: type, value: handler) in _reverseRegistry.entries) {
+    for (final MapEntry(key: type, value: handler)
+        in _reverseRegistry.entries) {
       if (handler.handlesValue(value)) {
         _reverseRegistry[type] = handler;
         return handler.typeId;
