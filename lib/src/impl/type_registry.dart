@@ -50,7 +50,7 @@ class _TypeRegistry {
 
     if (value is T) {
       return value;
-    } else if (value is List && T is List) {
+    } else if (value is List && T.toString().toLowerCase().contains('list<')) {
       return value as T;
     } else {
       throw ArgumentError(
